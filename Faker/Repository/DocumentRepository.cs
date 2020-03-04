@@ -1,12 +1,10 @@
 ﻿using Faker.Classes;
 using Faker.Factory;
 using Faker.Models;
+using Faker.QueryGenerators;
 using Nest;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Faker.Repository
 {
@@ -39,16 +37,16 @@ namespace Faker.Repository
             client.IndexMany<Building>(documents);
         }
 
-        public IEnumerable<Building> GeoDistance(GeoPoint geoPoint, GeoDistance geoDistance)
+        public IEnumerable<Building> GeoDistance(GeoCircle circle)
         {
-            DistanceUnit distanceUnit = ConvertToDistanceUnit(geoDistance);
+            DistanceUnit distanceUnit = ConvertToDistanceUnit(circle.Distance);
             var results = client.Search<Building>(s => s
                 .Query(q => q
                     .GeoDistance(g => g
                         .Field(f => f.Location)
                         .DistanceType(GeoDistanceType.Arc)
-                        .Location(geoPoint.Lat, geoPoint.Lon)
-                        .Distance(geoDistance.Distance, distanceUnit)
+                        .Location(circle.Center.Lat, circle.Center.Lon)
+                        .Distance(circle.Distance.Distance, distanceUnit)
                         .ValidationMethod(GeoValidationMethod.IgnoreMalformed)
                         )
                     )
@@ -61,9 +59,9 @@ namespace Faker.Repository
             return (DistanceUnit)Enum.Parse(typeof(DistanceUnit), geoDistance.DistanceUnit.ToString());
         }
 
-        public IEnumerable<Building> GeoPolygon(IEnumerable<GeoPoint> geoPoints)
+        public IEnumerable<Building> GeoPolygon(GeoPolygon polygon)
         {
-            var geoLocations = ConvertToGeoLocation(geoPoints);
+            var geoLocations = ConvertToGeoLocation(polygon.Corners);
             var results = client.Search<Building>(s => s
                 .Query(q => q
                     .GeoPolygon(g => g
@@ -88,20 +86,20 @@ namespace Faker.Repository
 
         private GeoLocation ConvertToGeoLocation(GeoPoint geoPoint)
         {
-            return new GeoLocation(geoPoint.Lat,geoPoint.Lon);
+            return new GeoLocation(geoPoint.Lat, geoPoint.Lon);
         }
 
-        public IEnumerable<Building> GetSortedGeoDistance(GeoPoint geoPoint, GeoDistance radious)
+        public IEnumerable<Building> GetSortedGeoDistance(GeoCircle circle)
         {
-            DistanceUnit distanceUnit = ConvertToDistanceUnit(radious);
-            GeoLocation geoLocation = ConvertToGeoLocation(geoPoint);
+            DistanceUnit distanceUnit = ConvertToDistanceUnit(circle.Distance);
+            GeoLocation geoLocation = ConvertToGeoLocation(circle.Center);
             var results = client.Search<Building>(s => s
                 .Query(q => q
                     .GeoDistance(g => g
                         .Field(f => f.Location)
                         .DistanceType(GeoDistanceType.Arc)
-                        .Location(geoPoint.Lat, geoPoint.Lon)
-                        .Distance(radious.Distance, distanceUnit)
+                        .Location(circle.Center.Lat, circle.Center.Lon)
+                        .Distance(circle.Distance.Distance, distanceUnit)
                         .ValidationMethod(GeoValidationMethod.IgnoreMalformed)
                         )
                     )
@@ -118,5 +116,16 @@ namespace Faker.Repository
                 );
             return results.Documents;
         }
+
+        public IEnumerable<Building> GetLineDistance(GeoLine line)
+        {
+            var queryGenerator = new LineQueryGenerator(line, nameof(Building.Location));
+            var query = queryGenerator.GetQuery();
+
+            var results = client.Search<Building>(s => s.Query(q => query));
+
+            return results.Documents;
+        }
+
     }
 }

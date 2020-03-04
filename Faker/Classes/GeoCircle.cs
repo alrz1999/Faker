@@ -22,5 +22,10 @@ namespace Faker.Classes
         public GeoPoint Center { get; private set; }
 
         public GeoDistance Distance { get; private set; }
+
+        public GeoCircle Clone()
+        {
+            return new GeoCircle(Center, Distance);
+        }
     }
 }
