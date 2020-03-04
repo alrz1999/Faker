@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Faker.Repository
 {
-    interface IDocumentRepository <T>
+    public interface IDocumentRepository <T>
     {
         void Index(T document);
 

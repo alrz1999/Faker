@@ -11,5 +11,11 @@ namespace Faker.Classes
         public GeoDistanceUnit DistanceUnit { get; set; }
 
         public double Distance { get; set; }
+
+        public GeoDistance Clone()
+        {
+            var res = (GeoDistance)MemberwiseClone();
+            return res;
+        }
     }
 }

@@ -3,15 +3,8 @@ using Faker.Factory;
 using Faker.Logic;
 using Faker.Models;
 using Faker.Repository;
-using Faker.Utils;
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
 using System.Configuration;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace Faker
 {
@@ -64,10 +57,9 @@ namespace Faker
                 DistanceUnit = GeoDistanceUnit.Meters
             };
             var multipleBy = 10;
-            NearestPointFinder nearestPointFinder = new NearestPointFinder(coordinate, radious, multipleBy);
+            NearestPointFinder nearestPointFinder = new NearestPointFinder(documentRepository);
 
-            Console.WriteLine(nearestPointFinder.GetNearestPoint(documentRepository));
-
+            Console.WriteLine(nearestPointFinder.GetNearestPoint(coordinate,radious,multipleBy));
         }
     }
 }

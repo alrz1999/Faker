@@ -5,38 +5,44 @@ using System.Linq;
 
 namespace Faker.Logic
 {
-    class NearestPointFinder
+    public class NearestPointFinder
     {
-        private readonly GeoPoint geoPoint;
-        private readonly GeoDistance distance;
-        private readonly int multipleBy;
+        private readonly IDocumentRepository<Building> documentRepository;
 
-        public NearestPointFinder(GeoPoint geoPoint, GeoDistance distance, int multipleBy) 
+        private GeoPoint center;
+
+        public NearestPointFinder(IDocumentRepository<Building> documentRepository)
         {
-            this.geoPoint = geoPoint;
-            this.distance = distance;
-            this.multipleBy = multipleBy;
+            this.documentRepository = documentRepository;
         }
 
-        public GeoPoint GetNearestPoint(IDocumentRepository<Building> documentRepository)
+        public GeoPoint GetNearestPoint(GeoPoint geoPoint, GeoDistance distance, int multipleBy)
         {
+            center = geoPoint;
+
+            var newDistance = distance.Clone();
 
             while (true)
             {
-                var result = documentRepository.GetSortedGeoDistance(geoPoint, distance);
+                var result = GetData(newDistance);
 
-                if (result.Count() == 0)
+                if (result == null)
                 {
-                    distance.Distance *= multipleBy;
+                    newDistance.Distance *= multipleBy;
                     continue;
                 }
                 
                 return new GeoPoint()
                 {
-                    Lat = result.First().Location.Latitude,
-                    Lon = result.First().Location.Longitude
+                    Lat = result.Location.Latitude,
+                    Lon = result.Location.Longitude
                 };
             }
+        }
+
+        private Building GetData(GeoDistance distance)
+        {
+            return documentRepository.GetSortedGeoDistance(center, distance).FirstOrDefault();
         }
     }
 }

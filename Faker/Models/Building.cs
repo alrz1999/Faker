@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Faker.Models
 {
-    class Building
+    public class Building
     {
         
 
