@@ -76,6 +76,8 @@
     <Compile Include="Models\Usage.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="QueryGenerators\LineQueryGenerator.cs" />
+    <Compile Include="QueryGenerators\QueryGenerator.cs" />
     <Compile Include="Repository\DocumentRepository.cs" />
     <Compile Include="Repository\IDocumentRepository.cs" />
     <Compile Include="Utils\DataGenerator.cs" />

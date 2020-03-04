@@ -1,9 +1,5 @@
 ﻿using Faker.Classes;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Faker.Repository
 {
@@ -17,11 +13,13 @@ namespace Faker.Repository
 
         T Get(string id);
 
-        IEnumerable<T> GeoDistance(GeoPoint geoPoint, GeoDistance geoDistance);
+        IEnumerable<T> GeoDistance(GeoCircle circle);
 
-        IEnumerable<T> GeoPolygon(IEnumerable<GeoPoint> geoPoints);
+        IEnumerable<T> GeoPolygon(GeoPolygon polygon);
 
-        IEnumerable<T> GetSortedGeoDistance(GeoPoint geoPoint, GeoDistance radious);
+        IEnumerable<T> GetSortedGeoDistance(GeoCircle circle);
+
+        IEnumerable<T> GetLineDistance(GeoLine line);
 
     }
 }

@@ -46,20 +46,23 @@ namespace Faker
             Console.WriteLine("Enter Longitude :");
             var lon = Convert.ToDouble(Console.ReadLine());
 
-            var coordinate = new GeoPoint()
+            var center = new GeoPoint()
             {
                 Lat = lat,
                 Lon = lon
             };
-            var radious = new GeoDistance()
+            var distance = new GeoDistance()
             {
                 Distance = 100,
                 DistanceUnit = GeoDistanceUnit.Meters
             };
+
+            var circle = new GeoCircle(center, distance);
             var multipleBy = 10;
+            
             NearestPointFinder nearestPointFinder = new NearestPointFinder(documentRepository);
 
-            Console.WriteLine(nearestPointFinder.GetNearestPoint(coordinate,radious,multipleBy));
+            Console.WriteLine(nearestPointFinder.GetNearestPoint(circle, multipleBy));
         }
     }
 }

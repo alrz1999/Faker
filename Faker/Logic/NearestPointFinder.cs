@@ -9,26 +9,24 @@ namespace Faker.Logic
     {
         private readonly IDocumentRepository<Building> documentRepository;
 
-        private GeoPoint center;
+        private GeoCircle circle;
 
         public NearestPointFinder(IDocumentRepository<Building> documentRepository)
         {
             this.documentRepository = documentRepository;
         }
 
-        public GeoPoint GetNearestPoint(GeoPoint geoPoint, GeoDistance distance, int multipleBy)
+        public GeoPoint GetNearestPoint(GeoCircle circle, int multipleBy)
         {
-            center = geoPoint;
-
-            var newDistance = distance.Clone();
+            this.circle = circle.Clone();
 
             while (true)
             {
-                var result = GetData(newDistance);
+                var result = GetData();
 
                 if (result == null)
                 {
-                    newDistance.Distance *= multipleBy;
+                    this.circle.Distance.Distance *= multipleBy;
                     continue;
                 }
                 
@@ -40,9 +38,9 @@ namespace Faker.Logic
             }
         }
 
-        private Building GetData(GeoDistance distance)
+        private Building GetData()
         {
-            return documentRepository.GetSortedGeoDistance(center, distance).FirstOrDefault();
+            return documentRepository.GetSortedGeoDistance(circle).FirstOrDefault();
         }
     }
 }
