@@ -10,22 +10,22 @@ using Faker.Classes;
 namespace Faker.Logic.Tests
 {
     [TestClass()]
-    public class TstTests
+    public class BoxFinderTestTests
     {
         GeoDistance distance = new GeoDistance()
         {
-            Distance = 1,
-            DistanceUnit = GeoDistanceUnit.Kilometers
+            Distance = 1900,
+            DistanceUnit = GeoDistanceUnit.Meters
         };
         GeoPoint start = new GeoPoint()
         {
-            Lat = 35.667579,
-            Lon = 51.395738
+            Lat = 35.6996773010464,
+            Lon = 51.3377235245839
         };
         GeoPoint end = new GeoPoint()
         {
-            Lat = 35.667793,
-            Lon = 51.398417
+            Lat = 35.72497,
+            Lon = 51.38082
         };
         [TestMethod()]
         public void TstTest()

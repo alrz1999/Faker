@@ -57,7 +57,7 @@
   </Choose>
   <ItemGroup>
     <Compile Include="Logic\BoundingBoxFinderTests.cs" />
-    <Compile Include="Logic\TstTests.cs" />
+    <Compile Include="Logic\BoxFinderTestTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

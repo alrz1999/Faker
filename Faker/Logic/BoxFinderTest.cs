@@ -40,9 +40,9 @@ namespace Faker.Logic
             if (this.routeDistance.Bearing == 0)
                 newPoint = GetNewPoint(270, this.start);
             else if (this.routeDistance.Bearing > 180)
-                newPoint = GetNewPoint((routeDistance.Bearing - 90) % 360, this.end);
+                newPoint = GetNewPoint(routeDistance.Bearing - 90, this.end);
             else if (this.routeDistance.Bearing < 180)
-                newPoint = GetNewPoint((routeDistance.Bearing + 90) % 360, this.start);
+                newPoint = GetNewPoint(routeDistance.Bearing + 90, this.start);
             else
                 newPoint = GetNewPoint(270, this.end);
             return new GeoPoint
@@ -52,26 +52,15 @@ namespace Faker.Logic
             };
         }
 
-        private Coordinate GetNewPoint(double bearing, Coordinate start)
-        {
-            Coordinate newPoint = new Coordinate()
-            {
-                Latitude = start.Latitude,
-                Longitude = start.Longitude
-            };
-            newPoint.Move(distance.Distance, bearing, Shape.Ellipsoid);
-            return newPoint;
-        }
-
         private GeoPoint GetBottomRight()
         {
             Coordinate newPoint;
             if (this.routeDistance.Bearing == 0)
                 newPoint = GetNewPoint(90, this.start);
             else if (this.routeDistance.Bearing > 180)
-                newPoint = GetNewPoint((routeDistance.Bearing - 90) % 360, this.start);
+                newPoint = GetNewPoint(routeDistance.Bearing - 90, this.start);
             else if (this.routeDistance.Bearing < 180)
-                newPoint = GetNewPoint((routeDistance.Bearing + 90) % 360, this.end);
+                newPoint = GetNewPoint(routeDistance.Bearing + 90, this.end);
             else
                 newPoint = GetNewPoint(90, this.end);
             return new GeoPoint
@@ -115,6 +104,13 @@ namespace Faker.Logic
                 Lat = newPoint.Latitude.ToDouble(),
                 Lon = newPoint.Longitude.ToDouble()
             };
+        }
+
+        private Coordinate GetNewPoint(double bearing, Coordinate startPoint)
+        {
+            Coordinate newPoint = new Coordinate(startPoint.Latitude.ToDouble(),startPoint.Longitude.ToDouble());
+            newPoint.Move(distance.Distance, bearing, Shape.Ellipsoid);
+            return newPoint;
         }
     }
 }
