@@ -6,7 +6,7 @@
 
         protected QueryGenerator(string field)
         {
-            this.field = field;
+            this.field = field.ToLower();
         }
     }
 }

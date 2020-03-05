@@ -5,6 +5,8 @@ using Faker.QueryGenerators;
 using Nest;
 using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Text;
 
 namespace Faker.Repository
 {
@@ -122,9 +124,9 @@ namespace Faker.Repository
             var queryGenerator = new LineQueryGenerator(line, nameof(Building.Location));
             var query = queryGenerator.GetQuery();
 
-            var results = client.Search<Building>(s => s.Query(q => query));
-
-            return results.Documents;
+            var results = client.Search<Building>(s => s.Query (q=>query));
+            Console.WriteLine(System.Text.Encoding.UTF8.GetString(results.ApiCall.RequestBodyInBytes));
+                return results.Documents;
         }
 
     }

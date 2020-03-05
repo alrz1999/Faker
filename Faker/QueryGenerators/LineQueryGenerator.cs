@@ -48,7 +48,9 @@ namespace Faker.QueryGenerators
             return new GeoPolygonQuery
             {
                 Field = field,
-                Points = corners.Select(x => new GeoLocation(x.Lat, x.Lon))
+                ValidationMethod = GeoValidationMethod.IgnoreMalformed,
+                Points = corners.Select(x => new GeoLocation(x.Lat, x.Lon)),
+                
             };
         }
 
@@ -57,8 +59,10 @@ namespace Faker.QueryGenerators
             return new GeoDistanceQuery
             {
                 Field = field,
+                DistanceType = GeoDistanceType.Arc,
                 Location = new GeoLocation(center.Lat, center.Lon),
-                Distance = new Distance(line.Distance.Distance, ConvertGeoDistanceUnitToNestDistanceUnit(line.Distance.DistanceUnit))
+                Distance = new Distance(line.Distance.Distance, ConvertGeoDistanceUnitToNestDistanceUnit(line.Distance.DistanceUnit)),
+                ValidationMethod = GeoValidationMethod.IgnoreMalformed
             };
         }
 

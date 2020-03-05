@@ -22,7 +22,7 @@ namespace Faker.Logic
                 throw new ArgumentException("invalid start point!");
 
             if (!Coordinate.TryParse(end.ToString(), offEagerLoad, out this.end))
-                throw new ArgumentException("invalid end point!");
+                throw new ArgumentException("invalid end point!");           
         }
 
         public IEnumerable<GeoPoint> GetBoundingBox()

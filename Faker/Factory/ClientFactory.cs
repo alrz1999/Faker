@@ -13,7 +13,7 @@ namespace Faker.Factory
 
         public ClientFactory(Uri uri, string defaultIndex)
         {
-            this.connectionSetting = new ConnectionSettings(uri).DefaultIndex(defaultIndex);
+            this.connectionSetting = new ConnectionSettings(uri).DefaultIndex(defaultIndex).EnableDebugMode().DisableDirectStreaming().PrettyJson();
         }
 
 
