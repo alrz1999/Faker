@@ -10,7 +10,7 @@ using Faker.Factory;
 using Faker.Repository;
 using Faker.Models;
 using System.Configuration;
-
+using CoordinateSharp;
 
 namespace Faker.Tests
 {
@@ -20,7 +20,7 @@ namespace Faker.Tests
         private static IDocumentRepository<Building> documentRepository;
 
         [TestMethod()]
-        public void MainTest()
+        public void LineQuerTest()
         {
             Uri uri = new Uri("http://localhost:9200");
             ClientFactory clientFactory = new ClientFactory(uri, "building");
@@ -38,14 +38,23 @@ namespace Faker.Tests
             };
             var distance = new GeoDistance()
             {
-                Distance = 100,
+                Distance = 1,
                 DistanceUnit = GeoDistanceUnit.Kilometers
             };
             GeoLine geoLine = new GeoLine(distance, routePoints);
-
-
             var results = documentRepository.GetLineDistance(geoLine);
-            Assert.Fail();
+            
+            foreach (var result in results)
+            {
+                Coordinate resultCoordinate = new Coordinate(result.Location.Latitude,result.Location.Longitude);
+                foreach (var point in routePoints)
+                {
+                    Coordinate routePointCoordinate = new Coordinate(point.Lat, point.Lon);
+                    if(resultCoordinate.Get_Distance_From_Coordinate(routePointCoordinate).Meters <= distance.Distance)
+                        break;
+                    Assert.Fail($"point with lat = {point.Lat} and lon = {point.Lon} shouldn't be in search result");
+                }
+            }
         }
     }
 }
