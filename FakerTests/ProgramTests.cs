@@ -11,6 +11,7 @@ using Faker.Repository;
 using Faker.Models;
 using System.Configuration;
 using CoordinateSharp;
+using Faker.Logic;
 
 namespace Faker.Tests
 {
@@ -20,7 +21,7 @@ namespace Faker.Tests
         private static IDocumentRepository<Building> documentRepository;
 
         [TestMethod()]
-        public void LineQuerTest()
+        public void LineQueryTest()
         {
             Uri uri = new Uri("http://localhost:9200");
             ClientFactory clientFactory = new ClientFactory(uri, "building");
@@ -55,6 +56,38 @@ namespace Faker.Tests
                     Assert.Fail($"point with lat = {point.Lat} and lon = {point.Lon} shouldn't be in search result");
                 }
             }
+        }
+
+
+        [TestMethod()]
+        public void NearestPointTest()
+        {
+            Uri uri = new Uri("http://localhost:9200");
+            ClientFactory clientFactory = new ClientFactory(uri, "building");
+            documentRepository = new DocumentRepository(clientFactory.GetClient());
+            var lat = 20;
+            var lon = 20;
+
+            var center = new GeoPoint()
+            {
+                Lat = lat,
+                Lon = lon
+            };
+            var distance = new GeoDistance()
+            {
+                Distance = 100,
+                DistanceUnit = GeoDistanceUnit.Meters
+            };
+
+            var circle = new GeoCircle(center, distance);
+            var multipleBy = 10;
+
+            NearestPointFinder nearestPointFinder = new NearestPointFinder(documentRepository);
+            var actual = nearestPointFinder.GetNearestPoint(circle,multipleBy);
+            var expected = documentRepository.GetSortedGeoDistance(circle).FirstOrDefault().Location;
+            if (actual.Lat != expected.Latitude || actual.Lon != expected.Longitude)
+                Assert.Fail();
+                
         }
     }
 }
