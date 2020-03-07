@@ -42,7 +42,7 @@ namespace Faker.QueryGenerators
 
         private GeoPolygonQuery GetPolygonQuery(GeoPoint start, GeoPoint end)
         {
-            var boundingBoxFinder = new BoxFinderTest(line.Distance, start, end);
+            var boundingBoxFinder = new BoundingBoxFinder(line.Distance, start, end);
             var corners = boundingBoxFinder.GetBoundingBox();
 
             return new GeoPolygonQuery

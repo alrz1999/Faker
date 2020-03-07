@@ -71,9 +71,8 @@
     <Compile Include="Classes\GeoSearchType.cs" />
     <Compile Include="Factory\Client.cs" />
     <Compile Include="Factory\ClientFactory.cs" />
-    <Compile Include="Logic\BoundingBoxFinder.cs" />
     <Compile Include="Logic\NearestPointFinder.cs" />
-    <Compile Include="Logic\BoxFinderTest.cs" />
+    <Compile Include="Logic\BoundingBoxFinder.cs" />
     <Compile Include="Models\Building.cs" />
     <Compile Include="Models\Usage.cs" />
     <Compile Include="Program.cs" />

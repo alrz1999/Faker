@@ -1,76 +1,107 @@
-﻿using Faker.Classes;
+﻿using CoordinateSharp;
+using Faker.Classes;
+using Faker.Utils;
 using System;
 using System.Collections.Generic;
-using CoordinateSharp;
+
 namespace Faker.Logic
 {
     public class BoundingBoxFinder
     {
-        private readonly GeoDistance distance;
+        private readonly GeoDistance searchDistance;
         private readonly Coordinate start;
         private readonly Coordinate end;
-
-        private double verticalDistance;
-        private double horizontalDistance;
+        private readonly Distance startToEndDistance;
 
         public BoundingBoxFinder(GeoDistance distance, GeoPoint start, GeoPoint end)
         {
-            this.distance = distance;
+            this.searchDistance = distance;
             var offEagerLoad = new EagerLoad(false);
 
             if (!Coordinate.TryParse(start.ToString(), offEagerLoad, out this.start))
                 throw new ArgumentException("invalid start point!");
 
             if (!Coordinate.TryParse(end.ToString(), offEagerLoad, out this.end))
-                throw new ArgumentException("invalid end point!");           
+                throw new ArgumentException("invalid end point!");
+
+            startToEndDistance = new Distance(this.start,this.end);
         }
 
         public IEnumerable<GeoPoint> GetBoundingBox()
         {
-            var lonDistance = start.Longitude.ToDouble() - end.Longitude.ToDouble();
-            var latDistance = start.Latitude.ToDouble() - end.Latitude.ToDouble();
-
-            var distance = Math.Sqrt(Math.Pow(lonDistance, 2) + Math.Pow(latDistance, 2));
-
-            verticalDistance = this.distance.Distance * lonDistance / distance;
-            horizontalDistance = this.distance.Distance * latDistance / distance;
-
             return new List<GeoPoint>() { GetTopLeft(), GetTopRight(), GetBottomRight(), GetBottomLeft(), GetTopLeft() };
         }
 
         private GeoPoint GetBottomLeft()
         {
-            return new GeoPoint
-            {
-                Lat = start.Longitude.ToDouble() + horizontalDistance,
-                Lon = start.Latitude.ToDouble() - verticalDistance
-            };
+            Coordinate newPoint;
+            if (this.startToEndDistance.Bearing == 0)
+                newPoint = GetNewPoint(270, this.start);
+            else if (this.startToEndDistance.Bearing > 180)
+                newPoint = GetNewPoint(startToEndDistance.Bearing - 90, this.end);
+            else if (this.startToEndDistance.Bearing < 180)
+                newPoint = GetNewPoint(startToEndDistance.Bearing + 90, this.start);
+            else
+                newPoint = GetNewPoint(270, this.end);
+            return ConvertCoordinateToGeoPoint(newPoint);
         }
 
         private GeoPoint GetBottomRight()
         {
-            return new GeoPoint
-            {
-                Lat = end.Longitude.ToDouble() + horizontalDistance,
-                Lon = end.Latitude.ToDouble() - verticalDistance
-            };
+            Coordinate newPoint;
+            if (this.startToEndDistance.Bearing == 0)
+                newPoint = GetNewPoint(90, this.start);
+            else if (this.startToEndDistance.Bearing > 180)
+                newPoint = GetNewPoint(startToEndDistance.Bearing - 90, this.start);
+            else if (this.startToEndDistance.Bearing < 180)
+                newPoint = GetNewPoint(startToEndDistance.Bearing + 90, this.end);
+            else
+                newPoint = GetNewPoint(90, this.end);
+            return ConvertCoordinateToGeoPoint(newPoint);
         }
 
         private GeoPoint GetTopRight()
         {
-            return new GeoPoint
-            {
-                Lat = end.Longitude.ToDouble() - horizontalDistance,
-                Lon = end.Latitude.ToDouble() + verticalDistance
-            };
+            Coordinate newPoint;
+            if (this.startToEndDistance.Bearing == 0)
+                newPoint = GetNewPoint(90, this.end);
+            else if (this.startToEndDistance.Bearing > 180)
+                newPoint = GetNewPoint((startToEndDistance.Bearing + 90) % 360, this.start);
+            else if (this.startToEndDistance.Bearing < 180)
+                newPoint = GetNewPoint((startToEndDistance.Bearing - 90) % 360, this.end);
+            else
+                newPoint = GetNewPoint(90, this.start);
+            return ConvertCoordinateToGeoPoint(newPoint);
         }
 
         private GeoPoint GetTopLeft()
         {
+            Coordinate newPoint;
+            if (this.startToEndDistance.Bearing == 0)
+                newPoint = GetNewPoint(270, this.end);
+            else if (this.startToEndDistance.Bearing > 180)
+                newPoint = GetNewPoint((startToEndDistance.Bearing + 90) % 360, this.end);
+            else if (this.startToEndDistance.Bearing < 180)
+                newPoint = GetNewPoint((startToEndDistance.Bearing - 90) % 360, this.start);
+            else
+                newPoint = GetNewPoint(270, this.start);
+            return ConvertCoordinateToGeoPoint(newPoint);
+        }
+
+        private Coordinate GetNewPoint(double bearing, Coordinate startPoint)
+        {
+            var searchDistanceInMeter = DistanceUnitConverter.Convert(searchDistance.DistanceUnit, GeoDistanceUnit.Meters, searchDistance.Distance);
+            Coordinate newPoint = new Coordinate(startPoint.Latitude.ToDouble(),startPoint.Longitude.ToDouble());
+            newPoint.Move(searchDistanceInMeter, bearing, Shape.Ellipsoid);
+            return newPoint;
+        }
+
+        private static GeoPoint ConvertCoordinateToGeoPoint(Coordinate newPoint)
+        {
             return new GeoPoint
             {
-                Lat = start.Longitude.ToDouble() - horizontalDistance,
-                Lon = start.Latitude.ToDouble() + verticalDistance
+                Lat = newPoint.Latitude.ToDouble(),
+                Lon = newPoint.Longitude.ToDouble()
             };
         }
     }
