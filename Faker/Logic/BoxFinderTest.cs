@@ -92,9 +92,9 @@ namespace Faker.Logic
 
         private Coordinate GetNewPoint(double bearing, Coordinate startPoint)
         {
-            var searchDistanceInKm = DistanceUnitConverter.Convert(searchDistance.DistanceUnit, GeoDistanceUnit.Kilometers, searchDistance.Distance);
+            var searchDistanceInMeter = DistanceUnitConverter.Convert(searchDistance.DistanceUnit, GeoDistanceUnit.Meters, searchDistance.Distance);
             Coordinate newPoint = new Coordinate(startPoint.Latitude.ToDouble(),startPoint.Longitude.ToDouble());
-            newPoint.Move(searchDistanceInKm, bearing, Shape.Ellipsoid);
+            newPoint.Move(searchDistanceInMeter, bearing, Shape.Ellipsoid);
             return newPoint;
         }
 

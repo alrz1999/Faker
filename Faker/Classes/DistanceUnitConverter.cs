@@ -8,7 +8,7 @@ namespace Faker.Classes
 {
     public class DistanceUnitConverter
     {
-        Dictionary<GeoDistanceUnit, double> distanceUnits = new Dictionary<GeoDistanceUnit, double>()
+        private static readonly Dictionary<GeoDistanceUnit, double> distanceUnits = new Dictionary<GeoDistanceUnit, double>()
         {
             {GeoDistanceUnit.Inch, 0.0254 },
             {GeoDistanceUnit.Feet, 0.3048 },
