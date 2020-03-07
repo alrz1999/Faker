@@ -45,10 +45,6 @@ namespace Faker.Tests
 
 
             var results = documentRepository.GetLineDistance(geoLine);
-            foreach (var result in results)
-            {
-                Console.WriteLine(result.Location);
-            }
             Assert.Fail();
         }
     }
