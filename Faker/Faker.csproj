@@ -59,7 +59,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Classes\DistanceUnitConverter.cs" />
+    <Compile Include="Utils\DistanceUnitConverter.cs" />
     <Compile Include="Classes\GeoCircle.cs" />
     <Compile Include="Classes\GeoDistance.cs" />
     <Compile Include="Classes\GeoDistanceUnit.cs" />

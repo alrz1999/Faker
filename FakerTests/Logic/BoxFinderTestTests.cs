@@ -9,7 +9,7 @@ namespace Faker.Logic.Tests
     public class BoxFinderTestTests
     {
         [TestMethod()]
-        public void GetBoundingBoxTest()
+        public void GetBoundingBoxTestForShortDistance()
         {
             GeoDistance faultUnit = new GeoDistance()
             {
@@ -45,6 +45,42 @@ namespace Faker.Logic.Tests
             }
         }
 
+        [TestMethod()]
+        public void GetBoundingBoxTestForLongDistance()
+        {
+            GeoDistance faultUnit = new GeoDistance()
+            {
+                Distance = 2,
+                DistanceUnit = GeoDistanceUnit.Meters
+            };
+            GeoDistance distance = new GeoDistance()
+            {
+                Distance = 5,
+                DistanceUnit = GeoDistanceUnit.Kilometers
+            };
+            GeoPoint start = new GeoPoint()
+            {
+                Lat = 35.68919,
+                Lon = 51.38897
+            };
+            GeoPoint end = new GeoPoint()
+            {
+                Lat = 36.26046,
+                Lon = 59.61675
+            };
+            var boundingBoxFinder = new BoxFinderTest(distance, start, end);
+            var boundingBox = boundingBoxFinder.GetBoundingBox();
+            foreach(var point in boundingBox)
+            {
+                Distance distanceFromStart = new Distance(new Coordinate(start.Lat, start.Lon), new Coordinate(point.Lat, point.Lon));
+                Distance distanceFromEnd = new Distance(new Coordinate(end.Lat, end.Lon), new Coordinate(point.Lat, point.Lon));
+
+                if (!HasEnoughAccuracy(faultUnit, distance, distanceFromStart) && !HasEnoughAccuracy(faultUnit,distance,distanceFromEnd))
+                    Assert.Fail("Not enough Accuracy");
+                if (!IsGisInRange(point))
+                    Assert.Fail("Not in Range Lat or Lon");
+            }
+        }
         private static bool HasEnoughAccuracy(GeoDistance faultUnit, GeoDistance distance, Distance distanceFromStart)
         {
             return GetAbstractDistance(distance, distanceFromStart) > faultUnit.Distance;
