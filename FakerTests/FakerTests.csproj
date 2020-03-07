@@ -58,6 +58,7 @@
   <ItemGroup>
     <Compile Include="Logic\BoundingBoxFinderTests.cs" />
     <Compile Include="Logic\BoxFinderTestTests.cs" />
+    <Compile Include="ProgramTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

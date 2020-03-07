@@ -11,7 +11,7 @@ using System.Text;
 
 namespace Faker.Repository
 {
-    class DocumentRepository : IDocumentRepository<Building>
+    public class DocumentRepository : IDocumentRepository<Building>
     {
         private readonly Client client;
 

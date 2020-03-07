@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Faker.Factory
 {
-    class ClientFactory
+    public class ClientFactory
     {
         private IConnectionSettingsValues connectionSetting;
 

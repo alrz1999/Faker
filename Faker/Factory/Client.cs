@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Faker.Factory
 {
-    class Client : ElasticClient
+    public class Client : ElasticClient
     {
         public Client(IConnectionSettingsValues connectionSettings) : base(connectionSettings)
         {
