@@ -14,7 +14,7 @@ namespace Faker.Utils
             {GeoDistanceUnit.Inch, 0.0254 },
             {GeoDistanceUnit.Feet, 0.3048 },
             {GeoDistanceUnit.Yards, 0.9144 },
-            {GeoDistanceUnit.Miles, 1609.34},
+            {GeoDistanceUnit.Miles, 1609.344},
             {GeoDistanceUnit.NauticalMiles, 1852 },
             {GeoDistanceUnit.Kilometers, 1000 },
             {GeoDistanceUnit.Meters, 1 },

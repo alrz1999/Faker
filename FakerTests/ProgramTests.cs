@@ -19,7 +19,9 @@ namespace Faker.Tests
     public class ProgramTests
     {
         private static IDocumentRepository<Building> documentRepository;
-
+        /// <summary>
+        /// for Running these tests, start your elasticsearch on port 9200
+        /// </summary>
         [TestMethod()]
         public void LineQueryTest()
         {

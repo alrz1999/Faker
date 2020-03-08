@@ -75,6 +75,7 @@
     <Compile Include="Logic\BoundingBoxFinderTests.cs" />
     <Compile Include="ProgramTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Utils\DistanceUnitConverterTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
